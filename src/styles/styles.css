@@ -1,0 +1,30 @@
+
+html, body {
+    font: 100%/1.5 Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #fafafa;
+    color: rgba(0, 0, 0, 0.87);
+    height: 100vh;
+}
+
+.flex-column-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wrapper {
+    height: 100%;
+}
+
+.start-button {
+    widows: 250px;
+}
+
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}

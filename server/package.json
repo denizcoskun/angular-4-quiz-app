@@ -1,0 +1,14 @@
+{
+  "name": "servar",
+  "description": "description",
+  "authors": "author",
+  "version": "1.0.0",
+  "main": "pathToMain",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.15.3",
+    "fs": "0.0.1-security",
+    "node": "0.0.0",
+    "path": "^0.12.7"
+  }
+}
