@@ -15,7 +15,7 @@ import 'rxjs/add/operator/withLatestFrom';
 import { of } from 'rxjs/observable/of';
 
 interface AppState {
-  quiz: reducer.State;
+  app: reducer.State;
 }
 
 @Injectable()
@@ -26,7 +26,7 @@ export class QuizEffects {
     .switchMap(() => {
       return this.quizService.getQuiz().map(results => {
         return new QuizActions.GetQuizSuccess(results);
-      });
+      }).catch(() => of());
     });
 
   @Effect()
@@ -42,12 +42,13 @@ export class QuizEffects {
     .ofType(QuizActions.GET_QUESTION)
     .withLatestFrom(this.store)
     .map(([action, store]) => {
-      this.router.navigateByUrl('quiz/' + store.quiz.currentQuestion.id);
+        this.router.navigateByUrl('quiz/' + store.app.currentQuestion.id);
     });
 
   @Effect()
   answer$ = this.actions$
     .ofType(QuizActions.ANSWER_QUESTION)
+    .debounceTime(300)
     .map(toPayload)
     .switchMap((payload: Answering) =>
       this.quizService
@@ -61,11 +62,11 @@ export class QuizEffects {
     .ofType(QuizActions.ANSWER_SUCCESS)
     .withLatestFrom(this.store)
     .map(([action, store]) => {
-      if (store.quiz.questionQueue.length > 0) {
-        return new QuizActions.GetQuestion();
-      } else {
-        this.router.navigateByUrl('quiz/score');
+      if (store.app.quiz.questions.length === store.app.answers.length ) {
+        this.router.navigateByUrl('score');
         return new QuizActions.GetScore();
+      } else {
+      return new QuizActions.GetQuestion();
       }
     });
 

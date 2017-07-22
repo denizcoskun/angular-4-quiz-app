@@ -1,0 +1,13 @@
+<table>
+  <tr >
+  <th>Questions</th>
+  <th>Answers</th>
+  </tr>
+  <tr *ngFor="let answer of scoreDetails | async" [ngStyle]="{color: answer.answerIndex === 0 ? 'green' : 'red'}">
+    <td>{{answer.questionId}}</td>
+    <td>{{answer.answerIndex === 0 ? 'Correct' : 'Incorrect'}}</td>
+  </tr>
+</table>
+
+<h3> Your Score: {{score | async }}</h3>
+  <button md-raised-button color="primary" [routerLink]="['/quiz']" class="start-button">TAKE ANOTHER QUIZ</button>

@@ -1,5 +1,9 @@
-<h3>
-  question works!
-</h3>
 
-<button md-raised-button (click)="answer()">Answer</button>
+<div class="question" *ngIf="question">
+  <h2 class="mat-headline">{{question.text}}</h2>
+  <app-answer *ngFor="let answer of (question.answers | shuffle)" 
+  [answer]="answer" (submit)="submitAnswer($event)" validateAnswer [isAnswered]="isAnswered | async" >
+  </app-answer>
+</div>
+
+

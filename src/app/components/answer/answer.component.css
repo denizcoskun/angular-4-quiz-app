@@ -1,0 +1,9 @@
+:host() {
+    display: block;
+    width: 200px; 
+    margin: 12px;
+} 
+
+.mat-raised-button {
+    width: 100%;
+}

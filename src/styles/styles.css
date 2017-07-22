@@ -15,12 +15,21 @@ html, body {
 }
 
 .wrapper {
-    height: 100%;
+    height: calc(100vh - 64px);
 }
 
 .start-button {
     widows: 250px;
 }
+
+.true .mat-raised-button {
+   background-color: #8bc34a;
+}
+
+.false .mat-raised-button {
+   background-color: #f44336;
+}
+
 
 
 * {

@@ -6,20 +6,16 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 
 import { MaterialModule } from './shared/material.module';
 
-// Components
-import { WelcomeComponent } from './components/welcome/welcome.component';
-import { QuizComponent } from './components/quiz/quiz.component';
-import { QuestionComponent } from './components/question/question.component';
-
-
 // Routes
 import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
-  { path: '', component: WelcomeComponent },
+  { path: '', pathMatch: 'full', redirectTo: 'welcome' },
+  { path: 'welcome', component: WelcomeComponent},
   { path: 'quiz', component: QuizComponent, children: [
-    { path: ':id', component: QuestionComponent },
-    { path: 'scoreboard', component: QuestionComponent}
+    { path: ':id', component: QuestionComponent }
   ]},
+  { path: 'score', component: ScoreComponent, canActivate: [ScoreRouteGuardService]},
+
 ];
 
 export const appRouting = RouterModule.forRoot(routes);
@@ -30,16 +26,32 @@ import { EffectsModule } from '@ngrx/effects';
 import { reducer } from 'app/store/reducer';
 import { QuizEffects } from 'app/store/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+
 // Services
 import { QuizService } from './services/quiz.service';
 import { StoreService } from './services/store.service';
+import { ScoreRouteGuardService } from './services/score.guard.service';
+
+// Components
+import { WelcomeComponent } from './components/welcome/welcome.component';
+import { QuizComponent } from './components/quiz/quiz.component';
+import { QuestionComponent } from './components/question/question.component';
+import { ScoreComponent } from './components/score/score.component';
+import { AnswerComponent } from './components/answer/answer.component';
+import { ValidateAnswerDirective } from './directives/validate-answer.directive';
+import { ShufflePipe } from './pipes/shuffle.pipe';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
     QuizComponent,
-    QuestionComponent
+    QuestionComponent,
+    ScoreComponent,
+    AnswerComponent,
+    ValidateAnswerDirective,
+    ShufflePipe,
   ],
   imports: [
     BrowserModule,
@@ -47,11 +59,11 @@ import { StoreService } from './services/store.service';
     NoopAnimationsModule,
     MaterialModule,
     appRouting,
-    StoreModule.forRoot({quiz: reducer}),
+    StoreModule.forRoot({app: reducer}),
     EffectsModule.forRoot([QuizEffects]),
     StoreDevtoolsModule.instrument(),
   ],
-  providers: [QuizService, StoreService],
+  providers: [QuizService, StoreService, ScoreRouteGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

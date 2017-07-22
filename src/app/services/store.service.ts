@@ -10,7 +10,7 @@ import * as QuizActions from 'app/store/actions';
 export class StoreService {
   question;
 
-  constructor(private store: Store<{quiz: reducer.State}>) {}
+  constructor(private store: Store<{app: reducer.State}>) {}
 
   getQuiz() {
     this.store.dispatch(new QuizActions.GetQuiz());
@@ -22,5 +22,25 @@ export class StoreService {
 
   getQuestion() {
     this.store.dispatch(new QuizActions.GetQuestion());
+  }
+
+  get quizProgress(): Observable<any> {
+    return this.store.select(reducer.selectQuizProgress);
+  }
+
+  get currentQuestion(): Observable<Question> {
+    return this.store.select(reducer.selectQuestion);
+  }
+
+  get quizStatus(): Observable<boolean> {
+    return this.store.select(reducer.selectQuizStatus);
+  }
+
+  get quizScoreDetails(): Observable<Answering[]> {
+    return this.store.select(reducer.selectScoreDetails);
+  }
+
+  get quizScore(): Observable<number> {
+    return this.store.select(reducer.selectScore);
   }
 }

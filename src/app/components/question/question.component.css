@@ -1,0 +1,13 @@
+:host() {
+    display: flex;
+    height: 100%;
+}
+
+.question {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 24px;
+    text-align: center;
+}

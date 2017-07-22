@@ -1,0 +1,19 @@
+:host() {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    padding: 64px 24px;
+}
+
+table {
+    width: 300px;
+    margin: 24px;
+    text-align: center;
+    table-layout: fixed;
+}
+
+th {
+    font-weight: 500;
+    font-size: 18px;
+}

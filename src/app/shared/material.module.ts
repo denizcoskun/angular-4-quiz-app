@@ -11,6 +11,7 @@ import {
   MdToolbarModule,
   MdIconModule,
   MdRippleModule,
+  MdTableModule
 } from '@angular/material';
 
 const modules = [
@@ -26,6 +27,7 @@ const modules = [
   MdToolbarModule,
   MdIconModule,
   MdRippleModule,
+  MdTableModule
 ];
 
 @NgModule({
