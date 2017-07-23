@@ -24,7 +24,10 @@ export class ValidateAnswerDirective {
   }
 
   highlight() {
-    this.el.nativeElement.className = this.answer.Index === 0 ? 'true' : 'false';
+    if (!this.answer) {
+      return
+    }
+    this.el.nativeElement.className =  this.answer.Index === 0 ? 'true' : 'false';
   }
 
   removeHighlight() {

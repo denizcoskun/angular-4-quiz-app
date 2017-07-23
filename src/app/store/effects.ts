@@ -70,7 +70,6 @@ export class QuizEffects {
   @Effect()
   answer$ = this.actions$
     .ofType(QuizActions.ANSWER_QUESTION)
-    .debounceTime(300)
     .map(toPayload)
     .switchMap((payload: Answering) =>
       this.quizService

@@ -11,7 +11,7 @@ export class QuizComponent implements OnInit, OnDestroy {
   constructor(private store: StoreService) { }
 
   ngOnInit() {
-    this.store.getQuiz();
+    this.store.getQuiz(); // when route is /quiz fetch the quiz from server
   }
 
   ngOnDestroy() {

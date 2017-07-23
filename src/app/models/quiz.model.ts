@@ -1,12 +1,12 @@
 export interface Quiz {
   id: number;
-  questions: Question[]; // questions.length = 8
+  questions: Question[];
 }
 
 export interface Question {
   id: number;
   text: string;
-  answers: Answer[]; // answers.length = 4
+  answers: Answer[];
 }
 
 export interface Answer {

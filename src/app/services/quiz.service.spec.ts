@@ -219,7 +219,7 @@ describe('QuizService', () => {
 
   describe('getQuiz', () => {
     it(
-      'should get response',
+      'should get quiz',
       async(
         inject([QuizService, MockBackend], (service, mockBackend) => {
           mockBackend.connections.subscribe(conn => {

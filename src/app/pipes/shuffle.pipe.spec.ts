@@ -5,4 +5,8 @@ describe('ShufflePipe', () => {
     const pipe = new ShufflePipe();
     expect(pipe).toBeTruthy();
   });
+  it('should shuffle array', () => {
+    const pipe = new ShufflePipe();
+    expect(pipe.transform([{Index: 0, text: 'A'}])).toBeTruthy()
+  })
 });
