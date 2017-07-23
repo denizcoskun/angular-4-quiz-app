@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Http, Response } from '@angular/http';
 import { Quiz, Answering } from 'app/models/quiz.model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class QuizService {
   quiz: Quiz;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: Http) {}
 
-  getQuiz(): Observable<Quiz> {
+  getQuiz(): Observable<any> {
     return this.http
-      .post<Quiz>('http://localhost:3000/quiz', {});
+      .post('/quiz', {})
+      .map((response: Response) => response.json());
   }
 
-  postAnswer(answer: Answering): Observable<Answering> {
+  postAnswer(answer: Answering): Observable<any> {
    return this.http
-      .post<Answering>('http://localhost:3000/answer', answer);
+      .post('/answer', answer);
   }
+
 }

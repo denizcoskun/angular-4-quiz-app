@@ -4,7 +4,7 @@ import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
 import * as reducer from 'app/store/reducer';
 import { Observable } from 'rxjs/Observable';
-import { Answering } from 'app/models/quiz.model';
+import { Answering, Question } from 'app/models/quiz.model';
 import * as QuizActions from './actions';
 import { QuizService } from 'app/services/quiz.service';
 
@@ -26,7 +26,7 @@ export class QuizEffects {
     .switchMap(() => {
       return this.quizService.getQuiz().map(results => {
         return new QuizActions.GetQuizSuccess(results);
-      }).catch(() => of());
+      }).catch(() => of(new QuizActions.GetQuizFail()) );
     });
 
   @Effect()
@@ -37,13 +37,35 @@ export class QuizEffects {
       return new QuizActions.GetQuestion();
     });
 
-  @Effect({ dispatch: false })
+  @Effect()
   getQuestion$ = this.actions$
     .ofType(QuizActions.GET_QUESTION)
     .withLatestFrom(this.store)
     .map(([action, store]) => {
-        this.router.navigateByUrl('quiz/' + store.app.currentQuestion.id);
-    });
+      const questionQueue = store.app.questionQueue;
+      // Check if there is question in the queue
+       if (questionQueue.length > 0 && typeof questionQueue[0].id === 'number') {
+         return new QuizActions.GetQuestionSuccess(questionQueue[0])
+       } else {
+         return new QuizActions.GetScore()
+       }
+  });
+
+  @Effect({ dispatch: false })
+  getQuestionSuccess$ = this.actions$
+    .ofType(QuizActions.GET_QUESTION_SUCCESS)
+    .map(toPayload)
+    .map((question: Question) => {
+        this.router.navigateByUrl('quiz/' + question.id);
+  });
+
+  @Effect({ dispatch: false })
+  getQuestionFail$ = this.actions$
+    .ofType(QuizActions.GET_QUESTION_FAIL)
+    .map(toPayload)
+    .map((payload: boolean) => {
+        this.router.navigateByUrl(payload ? 'quiz/score' : 'quiz');
+  });
 
   @Effect()
   answer$ = this.actions$
@@ -54,7 +76,7 @@ export class QuizEffects {
       this.quizService
         .postAnswer(payload)
         .map(() => new QuizActions.AnswerSuccess(payload))
-        .catch(() => of(new QuizActions.AnswerFailure()))
+        .catch(() => of(new QuizActions.AnswerFail()))
     );
 
   @Effect()
@@ -62,7 +84,8 @@ export class QuizEffects {
     .ofType(QuizActions.ANSWER_SUCCESS)
     .withLatestFrom(this.store)
     .map(([action, store]) => {
-      if (store.app.quiz.questions.length === store.app.answers.length ) {
+      // if all questions answered
+      if (store.app.progress === store.app.quiz.questions.length) {
         this.router.navigateByUrl('score');
         return new QuizActions.GetScore();
       } else {
@@ -72,7 +95,7 @@ export class QuizEffects {
 
   @Effect()
   answerFailed$ = this.actions$
-    .ofType(QuizActions.ANSWER_FAILURE)
+    .ofType(QuizActions.ANSWER_FAIL)
     .map(() => new QuizActions.GetQuestion());
 
   constructor(
@@ -81,4 +104,5 @@ export class QuizEffects {
     private router: Router,
     private store: Store<AppState>
   ) {}
+
 }

@@ -1,21 +1,31 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MaterialModule } from './shared/material.module';
+
+// Mock Backend
+import { MockBackend } from '@angular/http/testing';
+import { BaseRequestOptions } from '@angular/http';
+import { fakeBackendProvider } from './backend/mock.backend';
 
 // Routes
 import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'welcome' },
-  { path: 'welcome', component: WelcomeComponent},
-  { path: 'quiz', component: QuizComponent, children: [
-    { path: ':id', component: QuestionComponent }
-  ]},
-  { path: 'score', component: ScoreComponent, canActivate: [ScoreRouteGuardService]},
-
+  { path: 'welcome', component: WelcomeComponent },
+  {
+    path: 'quiz',
+    component: QuizComponent,
+    children: [{ path: ':id', component: QuestionComponent }]
+  },
+  {
+    path: 'score',
+    component: ScoreComponent,
+    canActivate: [ScoreRouteGuardService]
+  }
 ];
 
 export const appRouting = RouterModule.forRoot(routes);
@@ -41,7 +51,6 @@ import { AnswerComponent } from './components/answer/answer.component';
 import { ValidateAnswerDirective } from './directives/validate-answer.directive';
 import { ShufflePipe } from './pipes/shuffle.pipe';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,19 +60,26 @@ import { ShufflePipe } from './pipes/shuffle.pipe';
     ScoreComponent,
     AnswerComponent,
     ValidateAnswerDirective,
-    ShufflePipe,
+    ShufflePipe
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
+    HttpModule,
     NoopAnimationsModule,
     MaterialModule,
     appRouting,
-    StoreModule.forRoot({app: reducer}),
+    StoreModule.forRoot({ app: reducer }),
     EffectsModule.forRoot([QuizEffects]),
-    StoreDevtoolsModule.instrument(),
+    StoreDevtoolsModule.instrument()
   ],
-  providers: [QuizService, StoreService, ScoreRouteGuardService],
+  providers: [
+    QuizService,
+    StoreService,
+    ScoreRouteGuardService,
+    fakeBackendProvider,
+    MockBackend,
+    BaseRequestOptions
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

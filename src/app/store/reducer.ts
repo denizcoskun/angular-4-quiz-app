@@ -49,8 +49,13 @@ export function reducer( state = initialState, action: QuizActions.Actions): Sta
 
     case QuizActions.GET_QUESTION: {
       return {
+        ...state
+      };
+    }
+    case QuizActions.GET_QUESTION_SUCCESS: {
+      return {
         ...state,
-        currentQuestion: state.questionQueue[0], // first question in the queue
+        currentQuestion: action.payload, // first question in the queue
         questionQueue: state.questionQueue.filter((item, index) => index > 0), // removing first element in the queue
         progress: ++state.progress
       };
@@ -66,14 +71,14 @@ export function reducer( state = initialState, action: QuizActions.Actions): Sta
         ...state,
         loading: false,
         answers: [...state.answers, action.payload],
+        progress: [...state.answers, action.payload].length
       };
     }
-    case QuizActions.ANSWER_FAILURE: {
+    case QuizActions.ANSWER_FAIL: {
       return {
         ...state,
         loading: false,
         questionQueue: [...state.questionQueue, state.currentQuestion],
-        progress: --state.progress
       };
     }
     case QuizActions.GET_SCORE: {
