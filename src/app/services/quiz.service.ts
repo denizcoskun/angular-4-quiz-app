@@ -4,7 +4,6 @@ import { Quiz, Answering } from 'app/models/quiz.model';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/debounceTime';
 
 @Injectable()
 export class QuizService {
@@ -21,7 +20,6 @@ export class QuizService {
   postAnswer(answer: Answering): Observable<any> {
    return this.http
       .post('/answer', answer)
-      .debounceTime(300);
   }
 
 }

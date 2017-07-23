@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, InjectionToken, Optional, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Effect, Actions, toPayload } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
@@ -12,7 +12,17 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/withLatestFrom';
+import 'rxjs/add/operator/debounceTime';
 import { of } from 'rxjs/observable/of';
+import { Scheduler } from 'rxjs/Scheduler';
+import { async } from 'rxjs/scheduler/async';
+
+export const SEARCH_DEBOUNCE = new InjectionToken<number>('Search Debounce');
+export const SEARCH_SCHEDULER = new InjectionToken<Scheduler>(
+  'Search Scheduler'
+);
+
+
 
 interface AppState {
   app: reducer.State;
@@ -70,6 +80,7 @@ export class QuizEffects {
   @Effect()
   answer$ = this.actions$
     .ofType(QuizActions.ANSWER_QUESTION)
+    .debounceTime(this.debounce || 300, this.scheduler || async)
     .map(toPayload)
     .switchMap((payload: Answering) =>
       this.quizService
@@ -101,7 +112,17 @@ export class QuizEffects {
     private actions$: Actions,
     private quizService: QuizService,
     private router: Router,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    @Optional()
+    @Inject(SEARCH_DEBOUNCE) public debounce: number = 300,
+    /**
+       * You inject an optional Scheduler that will be undefined
+       * in normal application usage, but its injected here so that you can mock out
+       * during testing using the RxJS TestScheduler for simulating passages of time.
+       */
+    @Optional()
+    @Inject(SEARCH_SCHEDULER)
+    private scheduler: Scheduler
   ) {}
 
 }

@@ -6,8 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { empty } from 'rxjs/observable/empty';
-import { hot, cold } from 'jasmine-marbles';
-import { QuizEffects } from './effects';
+import { hot, cold, getTestScheduler } from 'jasmine-marbles';
+import { QuizEffects, SEARCH_DEBOUNCE, SEARCH_SCHEDULER } from './effects';
 import { QuizService } from 'app/services/quiz.service';
 import * as QuizActions from './actions';
 import { Observable } from 'rxjs/Observable';
@@ -40,7 +40,9 @@ describe('QuizEffects', () => {
           provide: QuizService,
           useValue: jasmine.createSpyObj('QuizService', ['getQuiz', 'postAnswer']),
         },
-        { provide: Actions, useFactory: getActions }
+        { provide: Actions, useFactory: getActions },
+        { provide: SEARCH_SCHEDULER, useFactory: getTestScheduler },
+        { provide: SEARCH_DEBOUNCE, useValue: 10 },
     ],
     });
     quizService = TestBed.get(QuizService);
@@ -60,8 +62,8 @@ describe('QuizEffects', () => {
       const action = new QuizActions.GetQuiz();
       const completion = new QuizActions.GetQuizSuccess(quiz);
 
-      actions$.stream = hot('-a---', { a: action });
-      const response = cold('-a|', { a: quiz });
+      actions$.stream = hot('-a-', { a: action });
+      const response = cold('-a-', { a: quiz });
       const expected = cold('--b', { b: completion });
       quizService.getQuiz.and.returnValue(response);
       expect(effects.getQuiz$).toBeObservable(expected);
@@ -74,9 +76,9 @@ describe('postAnswer', () => {
       const answering = { questionId: 0, answerIndex: 0} as Answering;
       const action = new QuizActions.AnswerQuestion(answering);
       const completion = new QuizActions.AnswerSuccess(answering);
-      actions$.stream = hot('-a', { a: action });
-      const response = cold('-a|', {a: {}});
-      const expected = cold('--b', { b: completion });
+      actions$.stream = hot('-a--', { a: action });
+      const response = cold('-a--', {a: {}});
+      const expected = cold('---b', { b: completion });
       quizService.postAnswer.and.returnValue(response);
       expect(effects.answer$).toBeObservable(expected);
   });
@@ -86,9 +88,9 @@ describe('postAnswer', () => {
       const error = 'Error!';
       const completion = new QuizActions.AnswerFail();
 
-      actions$.stream = hot('-a', { a: action });
-      const response = cold('-#', {}, error);
-      const expected = cold('--c', { c: completion });
+      actions$.stream = hot('-a--', { a: action });
+      const response = cold('-#--', {}, error);
+      const expected = cold('---c', { c: completion });
       quizService.postAnswer.and.returnValue(response);
       expect(effects.answer$).toBeObservable(expected);
   });
